@@ -2,9 +2,9 @@
 편의점 행사 정보 정리 사이트
 
 ## 개발 환경
-JAVA 11
-Spring Framework STS 3.9.7
-Oracle
+JAVA 11<br/>
+Spring Framework STS 3.9.7<br/>
+Oracle<br/>
 MyBatis
 
 ## 기능 구현
