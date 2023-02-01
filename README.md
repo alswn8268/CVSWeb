@@ -2,10 +2,17 @@
 편의점 행사 정보 정리 사이트
 
 ## 개발 환경
-JAVA 11<br/>
-Spring Framework STS 3.9.7<br/>
-Oracle<br/>
-MyBatis
+- JSP, HTML, CSS, JavaScript, jQuery
+- Database: Oracle
+- Programming Language: JAVA 11
+- Framework: Spring (STS 3.9.7)
+- Other: MyBatis, Ajax, Bootstrap, KakaoMap API, ...etc
+
+## 주요 기능
+- 전국 6대 편의점에서 1+1, 2+1, 할인 등 행사를 하는 상품을 정리해서 볼 수 있게 함
+- 전국 6대 편의점의 모든 지점을 크롤링해 DB에 넣고, 그 정보를 카카오맵 api와 연동해서 편의점 위치를 검색할 수 있게 함
+- 전국 6대 편의점의 이벤트(카드사 할인, 콜라보 이벤트 등)를 정리해 자체 제작 달력과 연동함
+- 자유 게시판, 쪽지 등 간단한 커뮤니티로서의 기능
 
 ## 기능 구현
 1차
