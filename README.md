@@ -5,7 +5,8 @@
 - JSP, HTML, CSS, JavaScript, jQuery
 - Database: Oracle
 - Programming Language: JAVA 11
-- Framework: Spring (STS 3.9.7)
+- Framework: Spring 
+- IDE : Eclipse (STS 3.9.7)
 - Other: MyBatis, Ajax, Bootstrap, KakaoMap API, ...etc
 
 ## 주요 기능
