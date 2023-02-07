@@ -186,39 +186,63 @@ public class ItemManager {
 	                Thread.sleep(500);
 	                doc = Jsoup.connect(targetSite).data("intPageSize", "13").data("intCurrPage", page + "")
 	                      .data("pTab",  i+"").post();
-	               Elements name = doc.select(".name"); // 상품명
-	               Elements price = doc.select(".price"); // 가격
-	               Elements img = doc.select(".pic_product > img"); // 상품 이미지
-	               Elements event = doc.select(".tag_list_01 > li"); // 이벤트 종류
+	                Elements name = doc.select("div.name"); // 상품명
+	                Elements price = doc.select("div.price"); // 가격
+	                Elements img = doc.select(".pic_product > img"); // 상품 이미지
+	                Elements event = doc.select(".tag_list_01 > li"); // 이벤트 종류
+	               
 	               
 	               if(name.size() == 0) {
 	            	   break;
 	               }
 	               
-	               for (int j = 1; j<=name.size()-1; j++) {
-	                  String itemName = name.get(j).text();
-//		                  System.out.println(itemName);
-	                  int itemPrice = Integer.parseInt(price.get(j).text().replaceAll("[^0-9]",""));
-//		                  System.out.println(itemPrice);
-	                  String itemImage ="https://www.7-eleven.co.kr" + img.get(j).attr("src");
-//		                  System.out.println(itemImage);
-	                  String eventType = event.get(j).text();
-//		                  System.out.println(itemEvent);
-	                  
-	                  ItemVO itemVO = new ItemVO();
-	                  itemVO.setCategory("기타상품"); // 카테고리 분류가 없음
-	                  itemVO.setItemName(itemName);
-	                  changeCategory(itemVO); // 상품명을 받았으면 카테고리를 다시 변경해준다.
-	                  itemVO.setItemPrice(itemPrice);
-	                  itemVO.setSellCVS("세븐일레븐");
-	                  itemVO.setEventType(eventType);
-	                  itemVO.setItemImage(itemImage);
-	                  
-	                  list.add(itemVO);
-	                  
-	               }
-	            }
-	         }
+	               String itemName = "";
+	               int itemPrice = 0;
+	               String itemImage = "";
+	               String eventType = "";
+	               String addItemName = "";
+	               String addItemImage = "";
+	               
+	               if (i == 3) {
+	            	   for (int j=0; j<name.size(); j+=2) {
+	            		   itemName = name.get(j).text();
+	            		   itemPrice = Integer.parseInt(price.get(j).text().replaceAll("[^0-9]",""));
+	            		   itemImage = "https://www.7-eleven.co.kr" + img.get(j).attr("src");
+	            		   eventType = "덤증정";
+	            		   addItemName = name.get(j+1).text();
+	            		   addItemImage = "https://www.7-eleven.co.kr" + img.get(j+1).attr("src");
+	            		   
+	 	                  ItemVO itemVO = new ItemVO();
+	 	                  itemVO.setItemName(itemName);
+	 	                  itemVO.setItemPrice(itemPrice);
+	 	                  itemVO.setSellCVS("세븐일레븐");
+	 	                  itemVO.setEventType(eventType);
+	 	                  itemVO.setItemImage(itemImage);
+	 	                  changeCategory(itemVO); // 상품명을 받았으면 카테고리를 다시 변경해준다.
+	 	                  
+	 	                  list.add(itemVO);
+	            	   }
+	               } else {
+						for (int j=0; j<name.size(); j++) {
+							itemName = name.get(j).text();
+							itemPrice = Integer.parseInt(price.get(j).text().replaceAll("[^0-9]", ""));
+							itemImage = "https://www.7-eleven.co.kr" + img.get(j).attr("src");
+							eventType = event.get(j).text();
+
+							ItemVO itemVO = new ItemVO();
+							itemVO.setItemName(itemName);
+							itemVO.setItemPrice(itemPrice);
+							itemVO.setSellCVS("세븐일레븐");
+							itemVO.setEventType(eventType);
+							itemVO.setItemImage(itemImage);
+							changeCategory(itemVO); // 상품명을 받았으면 카테고리를 다시 변경해준다.
+							
+							list.add(itemVO);
+
+						}
+	               	}
+	             }
+	          }
 
 		      } catch (Exception e) { 
 		         e.printStackTrace();
@@ -226,11 +250,12 @@ public class ItemManager {
 		      
 		      return list;
 		   }
-	
 	public ArrayList<ItemVO> getEmart24Item() {
 		ArrayList<ItemVO> list = new ArrayList<ItemVO>();
-		targetSite = "https://emart24.co.kr/product/eventProduct.asp";
-		
+		targetSite = "http://emart24.co.kr/product/eventProduct.asp";
+		// 2023/02 기준 https를 http로 바꾸지 않으면 오류 발생
+		// javax.net.ssl.SSLHandshakeException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+		// + 사이트 구조 변경
 		try {
 			int page = 0;
 			while(true) {
@@ -293,8 +318,7 @@ public class ItemManager {
 		
 		return list;
 
-	}
-	
+	}	
 	   public ArrayList<ItemVO> getMinistopItem() {
 		      ArrayList<ItemVO> list = new ArrayList<ItemVO>();
 		      HashMap<String, String> data = new HashMap<String, String>();

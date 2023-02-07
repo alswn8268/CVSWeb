@@ -189,7 +189,7 @@
 			TO_DATE((syear || '-' || smonth || '-' || sday), 'YYYY-MM-DD') <= TO_DATE((#{sYear} || '-' || #{sMonth} || '-' || #{sDay}), 'YYYY-MM-DD')
 			and
 			TO_DATE((eyear || '-' || emonth || '-' || eday), 'YYYY-MM-DD') >= TO_DATE((#{sYear} || '-' || #{sMonth} || '-' || #{sDay}), 'YYYY-MM-DD')
-			order by cvs, syear, smonth, sday, gup
+			order by syear, smonth, sday, gup, cvs
 		]]>
  	</select>
  	
@@ -199,7 +199,7 @@
 			select * from (SELECT * FROM schedule where eyear = 0) where
 			TO_DATE((syear || '-' || smonth || '-' || sday), 'YYYY-MM-DD') <= TO_DATE((#{sYear} || '-' || #{sMonth} || '-' || #{sDay}), 'YYYY-MM-DD')
 			and smonth = #{sMonth}
-			order by cvs, syear, smonth, sday, gup
+			order by syear, smonth, sday, gup, cvs
 		]]>
  	</select>
  	

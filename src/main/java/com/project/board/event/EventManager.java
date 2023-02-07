@@ -245,47 +245,34 @@ public class EventManager {
 	public ArrayList<EventboardVO> getEmart24Event() {
 		
 		ArrayList<EventboardVO> list = new ArrayList<EventboardVO>();
-		targetSite = "https://emart24.co.kr/service/event.asp";
+		targetSite = "http://emart24.co.kr/event/ing";
 		
 		try {
-			int page = 0;
 			while(true) {
-				page++;
 				doc = Jsoup.connect(targetSite)
-							.data("cpage", page+"")
-							.data("seq", "")
-							.post();
-				
-				if(doc.select("label.on").size() == 0) { // 진행중인 이벤트가 없을 때 반복문을 중단한다.
-					break;
+						.get();
+												
+				Elements elements = doc.select(".eventWrap");
+				for(Element element : elements) {		
+					targetSite = "http://emart24.co.kr"+ element.attr("href");
+					Thread.sleep(500);
+					doc = Jsoup.connect(targetSite).get();
+					
+					String subject = doc.select(".titleWrap").text().replace("상품 매장 서비스 이벤트 창업안내 상품 매장찾기 서비스 이벤트 창업안내 진행중", "").replace("(주) 이마트24", "").trim();
+					String image = doc.select(".contentWrap > img").attr("src");
+						
+					EventboardVO eventboardVO = new EventboardVO();
+					eventboardVO.setEv_sellcvs("이마트24");
+					eventboardVO.setEv_subject(subject);
+					eventboardVO.setEv_content(".");
+					eventboardVO.setEv_filename(image);
+					eventboardVO.setId("admin1");
+					eventboardVO.setNickname("관리자1");
+					eventboardVO.setEv_notice("no");
+					
+					list.add(eventboardVO);
 				}
-				
-				Elements elements = doc.select("tbody > tr");
-				
-				for(Element element : elements) {
-					Elements ele = element.select("td");
-					if(ele.get(4).text().equals("진행중")) {
-						String seq = ele.get(0).text();
-						targetSite = "https://emart24.co.kr/service/eventView.asp?seq="+seq;
-						Thread.sleep(500);
-						doc = Jsoup.connect(targetSite).get();
-						
-						String subject = doc.select("td.title").text();
-						String image = "https://emart24.co.kr" +
-								doc.select("td.contArea3 > img").attr("src");
-						
-						EventboardVO eventboardVO = new EventboardVO();
-						eventboardVO.setEv_sellcvs("이마트24");
-						eventboardVO.setEv_subject(subject);
-						eventboardVO.setEv_content(".");
-						eventboardVO.setEv_filename(image);
-						eventboardVO.setId("admin1");
-						eventboardVO.setNickname("관리자1");
-						eventboardVO.setEv_notice("no");
-						
-						list.add(eventboardVO);
-					}
-				}
+				break;
 			}
 			
 		} catch(Exception e) {

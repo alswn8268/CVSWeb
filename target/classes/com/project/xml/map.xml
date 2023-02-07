@@ -30,7 +30,12 @@
 	</select>
 
 	<select id="searchAdd" parameterType="mapParam" resultType="map_vo">
-		select * from map where address like '%' || #{ssido} || '%' and address like '%' || #{sgugun} || '%' and whichCVS = #{whichCVS} and storeName like '%' || #{storeName} || '%'
+		<if test="ssido != '세종'">
+			select * from map where address like '%' || #{ssido} || '%' and address like '%' || #{sgugun} || '%' and whichCVS = #{whichCVS} and storeName like '%' || #{storeName} || '%'
+		</if>
+		<if test="ssido == '세종'">
+			select * from map where address like '%' || #{ssido} || '%' and address like '%' || #{sgugun} || '%' and whichCVS = #{whichCVS} and storeName like '%' || #{storeName} || '%' and address not like '%서울%'
+		</if>
 	</select>
 	
 	<select id="itemMap" parameterType="mapParam" resultType="map_vo">

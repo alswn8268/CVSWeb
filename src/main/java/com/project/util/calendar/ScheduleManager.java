@@ -2,6 +2,7 @@ package com.project.util.calendar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -376,77 +377,71 @@ public class ScheduleManager
 		String targetSite = "";
 		Document doc = null;
 		
-		targetSite = "https://emart24.co.kr/service/event.asp";
+		targetSite = "http://emart24.co.kr/event/ing";
 		
 		try {
-			int page = 0;
 			while(true) {
-				page++;
 				doc = Jsoup.connect(targetSite)
-							.data("cpage", page+"")
-							.data("seq", "")
-							.post();
+						.get();
 				
-				if(doc.select("label.on").size() == 0) { // 진행중인 이벤트가 없을 때 반복문을 중단한다.
-					break;
-				}
-				
-				Elements elements = doc.select("tbody > tr");
-				
+				Elements elements = doc.select(".eventWrap");
 				for(Element element : elements) {
-					Elements ele = element.select("td"); // 2 event
-					if(ele.get(4).text().equals("진행중")) {
-						String dateArr[] = ele.get(3).text().split(" - ");
-						String startArr[] = dateArr[0].split("-");
-						String endArr[] = dateArr[1].split("-");
-						
-						int sYear = Integer.parseInt(startArr[0]);
-						
-						int sMonth = 0;
-						if(startArr[1].substring(0, 1).equals("0")) {
-							sMonth = Integer.parseInt(startArr[1].substring(1));
-						} else {
-							sMonth = Integer.parseInt(startArr[1]);
-						}
-						
-						int sDay = 0;
-						if(startArr[2].substring(0, 1).equals("0")) {
-							sDay = Integer.parseInt(startArr[2].substring(1));
-						} else {
-							sDay = Integer.parseInt(startArr[2]);
-						}
-						
-						int eYear = Integer.parseInt(endArr[0]);
-						
-						int eMonth = 0;
-						if(endArr[1].substring(0, 1).equals("0")) {
-							eMonth = Integer.parseInt(endArr[1].substring(1));
-						} else {
-							eMonth = Integer.parseInt(endArr[1]);
-						}
-						
-						int eDay = 0;
-						if(endArr[2].substring(0, 1).equals("0")) {
-							eDay = Integer.parseInt(endArr[2].substring(1));
-						} else {
-							eDay = Integer.parseInt(endArr[2]);
-						}
-						
-						String event = ele.get(2).text();
-						
-						ScheduleVO scheduleVO = new ScheduleVO();
-						scheduleVO.setsYear(sYear);
-						scheduleVO.setsMonth(sMonth);
-						scheduleVO.setsDay(sDay);
-						scheduleVO.seteYear(eYear);
-						scheduleVO.seteMonth(eMonth);
-						scheduleVO.seteDay(eDay);
-						scheduleVO.setEvent(event);
-						scheduleVO.setCVS("이마트24");
-						
-						list.add(scheduleVO);
+					targetSite = "http://emart24.co.kr"+ element.attr("href");
+					Thread.sleep(500);
+					doc = Jsoup.connect(targetSite).get();
+					
+					String dateStr = doc.select(".eventDate").text().trim();
+					String dateArr[] = dateStr.split("~");
+					String startArr[] = dateArr[0].trim().split("\\.");
+					String endArr[] = dateArr[1].trim().split("\\.");
+					
+					int sYear = Integer.parseInt(startArr[0]);
+					
+					int sMonth = 0;
+					if(startArr[1].substring(0, 1).equals("0")) {
+						sMonth = Integer.parseInt(startArr[1].substring(1));
+					} else {
+						sMonth = Integer.parseInt(startArr[1]);
 					}
+					
+					int sDay = 0;
+					if(startArr[2].substring(0, 1).equals("0")) {
+						sDay = Integer.parseInt(startArr[2].substring(1));
+					} else {
+						sDay = Integer.parseInt(startArr[2]);
+					}
+					
+					int eYear = Integer.parseInt(endArr[0]);
+					
+					int eMonth = 0;
+					if(endArr[1].substring(0, 1).equals("0")) {
+						eMonth = Integer.parseInt(endArr[1].substring(1));
+					} else {
+						eMonth = Integer.parseInt(endArr[1]);
+					}
+					
+					int eDay = 0;
+					if(endArr[2].substring(0, 1).equals("0")) {
+						eDay = Integer.parseInt(endArr[2].substring(1));
+					} else {
+						eDay = Integer.parseInt(endArr[2]);
+					}
+					
+					String event = doc.select(".titleWrap").text().replace("상품 매장 서비스 이벤트 창업안내 상품 매장찾기 서비스 이벤트 창업안내 진행중", "").replace("(주) 이마트24", "").trim();
+					
+					ScheduleVO scheduleVO = new ScheduleVO();
+					scheduleVO.setsYear(sYear);
+					scheduleVO.setsMonth(sMonth);
+					scheduleVO.setsDay(sDay);
+					scheduleVO.seteYear(eYear);
+					scheduleVO.seteMonth(eMonth);
+					scheduleVO.seteDay(eDay);
+					scheduleVO.setEvent(event);
+					scheduleVO.setCVS("이마트24");
+					
+					list.add(scheduleVO);
 				}
+				break;
 			}
 			
 		} catch(Exception e) {

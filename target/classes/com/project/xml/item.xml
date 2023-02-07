@@ -30,7 +30,7 @@
 	
 	<!-- 모든 상품의 개수를 얻어온다. -->
 	<select id="selectItemCount" resultType="int">
-		select count(*) from item
+		select count(*) from item where extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate)
 	</select>	 
 
 	<!-- 신상품의 개수를 얻어온다. -->
@@ -45,7 +45,7 @@
 	 	<![CDATA[
 			select * from (
 				select rownum rnum, TT.* from (
-					select * from item order by idx desc 
+					select * from item where extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) order by idx desc
 				) TT where rownum <= #{endNo}
 			) where rnum >= #{startNo} 		
 		]]>

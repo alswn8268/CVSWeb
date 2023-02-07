@@ -193,83 +193,50 @@ public class MapManager {
 
 	ArrayList<MapVO> list = new ArrayList<MapVO>();
 	targetSite = "https://www.7-eleven.co.kr/util/storeLayerPop.asp";
-
+	
 	try {
 		doc = Jsoup.connect(targetSite).get();
-		Elements sido = doc.select("#storeLaySido > option");
-//			System.out.println(sido);
-		for (int i = 9; i <= sido.size() - 1; i++) {
-			Element indexSido = sido.get(i);
-			Elements optionSido = indexSido.select("option");
-			String storeLaySido = optionSido.text();
-			Thread.sleep(500);
-			if (i == 9) { // 서울은 데이터가 너무 많아 한번에 크롤링이 안되어서 구군별로 나눠서 크롤링.
-				String targetGugun = "https://www.7-eleven.co.kr/library/asp/StoreGetGugun.asp";
-				doc = Jsoup.connect(targetGugun).data("sido", "서울").data("Gu", "").data("selName", "storeLayGu")
+		Elements sidoList = doc.select("select#storeLaySido > option"); // 시도를 가져온다.
+		for(int i=1; i<sidoList.size(); i++) { // 가져온 시도만큼 반복을 돌려준다.(i=1인 이유는 맨 첨 옵션값이 시/도이기 때문)
+			String sido = sidoList.get(i).text();
+			
+			targetSite = "https://www.7-eleven.co.kr/library/asp/StoreGetGugun.asp";
+			doc = Jsoup.connect(targetSite)
+					.data("Sido", sido) // 가져온 시도값을 데이터로 넣어준다.
+					.data("selName", "storeLayGu")
+					.post();
+			Elements gugunList = doc.select("select > option"); // 구군리스트를 가져온다.
+			for(int j=1; j<gugunList.size(); j++) { // 가져온 구군만큼 반복을 돌려준다.(i=1인 이유는 위와 동일)
+				String gugun = gugunList.get(j).text();
+				
+				targetSite = "https://www.7-eleven.co.kr/util/storeLayerPop.asp";
+				Thread.sleep(500);
+				doc = Jsoup.connect(targetSite)
+						.data("storeLaySido", sido) // 시도값과
+						.data("storeLayGu", gugun) // 구군값을 데이터로 넣어준다.
+						.data("hiddentext", "none")
 						.post();
-//				System.out.println(doc);
-				Elements guGun = doc.select("#storeLayGu > option");
-				for (int k = 1; k <= guGun.size() - 1; k++) {
-					Element indexGuGun = guGun.get(k);
-					Elements optionGuGun = indexGuGun.select("option");
-					String storeGuGun = optionGuGun.text();
-	//				System.out.println("=============================서울시==========================="+ storeGuGun);
-
-					doc = Jsoup.connect(targetSite).data("storeLaySido", storeLaySido)
-							.data("storeLayGu", storeGuGun).data("hiddentext", "none").post();
-					Elements site = doc.select(".type02 a");
-					for (int j = 0; j < site.size(); j++) {
-						Element element = site.get(j);
-						Elements spanElement = element.select("span");
-						if (spanElement.size() < 2) {
-							continue;
-						}
-//							System.out.println(spanElement.get(0).text());
-//						    System.out.println(spanElement.get(1).text());
-							String StoreName = spanElement.get(0).text();
-							String address = spanElement.get(1).text();
-							MapVO mapVO = new MapVO();
-							mapVO.setStoreName(StoreName);
-							mapVO.setWhichCVS("세븐일레븐");
-							mapVO.setAddress(address);
-							
-							list.add(mapVO);
-					}
-
+				Elements storeList = doc.select(".type02 a");
+				for(int k=0; k<storeList.size(); k++) {
+					Element element = storeList.get(k);
+					Elements spanElement = element.select("span");
+					
+					String storeName = spanElement.get(0).text();
+					String address = spanElement.get(1).text();
+					
+					MapVO mapVO = new MapVO();
+					mapVO.setStoreName(storeName);
+					mapVO.setWhichCVS("세븐일레븐");
+					mapVO.setAddress(address);
+					mapVO.setAddress(address.replace("충청북도", "충북").replace("강원도", "강원").replace("경기도", "경기").replace("경상남도", "경남").replace("경상북도", "경북")
+							.replace("광주광역시", "광주").replace("대구광역시", "대구").replace("대구시", "대구").replace("대전광역시", "대전").replace("부산광역시", "부산").replace("부산시", "부산")
+							.replace("서울특별시", "서울").replace("서울시", "서울").replace("세종특별자치시", "세종").replace("울산광역시", "울산").replace("인천광역시", "인천").replace("인천시", "인천")
+							.replace("전라남도", "전남").replace("전라북도", "전북").replace("제주도", "제주").replace("제주특별자치도", "제주").replace("충청남도", "충남"));
+					list.add(mapVO);
 				}
-			}
-
-			else {
-				doc = Jsoup.connect(targetSite).data("storeLaySido", storeLaySido).data("storeLayGu", "")
-						.data("hiddentext", "none").post();
-			}
-
-//				System.out.println(doc);
-			Elements site = doc.select(".type02 a");
-
-			for (int j = 0; j < site.size(); j++) {
-				Element element = site.get(j);
-				Elements spanElement = element.select("span");
-				if (spanElement.size() < 2) {
-					continue;
-				}
-//			   System.out.println(spanElement.get(0).text());
-//			   System.out.println(spanElement.get(1).text());
-				String StoreName = spanElement.get(0).text();
-				String address = spanElement.get(1).text();
-				MapVO mapVO = new MapVO();
-				mapVO.setStoreName(StoreName);
-				mapVO.setWhichCVS("세븐일레븐");
-				mapVO.setAddress(address.replace("충청북도", "충북").replace("강원도", "강원").replace("경기도", "경기").replace("경상남도", "경남").replace("경상북도", "경북")
-						.replace("광주광역시", "광주").replace("대구광역시", "대구").replace("대구시", "대구").replace("대전광역시", "대전").replace("부산광역시", "부산").replace("부산시", "부산")
-						.replace("서울특별시", "서울").replace("서울시", "서울").replace("세종특별자치시", "세종").replace("울산광역시", "울산").replace("인천광역시", "인천").replace("인천시", "인천")
-						.replace("전라남도", "전남").replace("전라북도", "전북").replace("제주도", "제주").replace("제주특별자치도", "제주").replace("충청남도", "충남"));
-
-				list.add(mapVO);
 			}
 		}
-
-	} catch (IOException | InterruptedException e) {
+	} catch(Exception e) {
 		e.printStackTrace();
 	}
 
