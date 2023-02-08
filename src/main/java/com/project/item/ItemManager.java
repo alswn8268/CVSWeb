@@ -250,65 +250,66 @@ public class ItemManager {
 		      
 		      return list;
 		   }
+   
 	public ArrayList<ItemVO> getEmart24Item() {
 		ArrayList<ItemVO> list = new ArrayList<ItemVO>();
-		targetSite = "http://emart24.co.kr/product/eventProduct.asp";
-		// 2023/02 기준 https를 http로 바꾸지 않으면 오류 발생
-		// javax.net.ssl.SSLHandshakeException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
-		// + 사이트 구조 변경
+		
 		try {
 			int page = 0;
-			while(true) {
+			while (true) {
 				page++;
+				targetSite = "http://emart24.co.kr/goods/event?page="+page;
 				Thread.sleep(500);
 				doc = Jsoup.connect(targetSite)
-							.data("productCategory", "")
-							.data("cpage", page+"")
-							.post();
+						.get();
+
+				Elements divs = doc.select("div.itemWrap");
 				
-				if(doc.select("p.productImg").size() == 0) {
+				if(divs.size() == 0) {
 					break;
 				}
 				
-				Elements elements = doc.select("ul.categoryListNew > li");
-				for (Element element : elements) {
-					Elements ele = element.select("p"); // 1 이미지 0 1+1
+				for(Element element : divs) {
+					Elements itemTxtWrap = element.select("div.itemTxtWrap");
+					Elements itemTit = element.select("div.itemTit");
+					Elements itemImg = element.select("div.itemImg");
 					
-					String itemName = ele.get(2).text();
+					String itemName = itemTxtWrap.select("a").get(0).text();
 					
-					String str = ele.get(3).text().replace("&nbsp;", "");
-					if(str.indexOf(" → ") != -1) {
-						String priceArr[] = str.split(" → ");
-						str = priceArr[1];
+					int itemPrice = 0;
+					if(itemTxtWrap.select("a").size() == 3) {
+						itemPrice = Integer.parseInt(itemTxtWrap.select("a").get(2).text().replaceAll("[^0-9]", "").trim());
+					} else {
+						try {
+							itemPrice = Integer.parseInt(itemTxtWrap.select("a").get(1).text().replaceAll("[^0-9]", "").trim());							
+						} catch (Exception e) {
+							itemPrice = Integer.parseInt(itemTxtWrap.select(".price").text().replaceAll("[^0-9]", "").trim());
+						}
 					}
-					str = str.replace(",", "").replace("원", "");
-					int itemPrice = Integer.parseInt(str.trim());
 					
-					String eventType = "";
-					if(ele.get(0).select("img").attr("alt").equals("1 + 1 뱃지 이미지")) {
+					String eventType = itemTit.select("span.floatR").text();
+					if(eventType.equals("1 + 1")) {
 						eventType = "1+1";
-					} else if(ele.get(0).select("img").attr("alt").equals("2 + 1 뱃지")) {
+					} else if(eventType.equals("2 + 1")) {
 						eventType = "2+1";
-					} else if(ele.get(0).select("img").attr("alt").equals("X2 더블 뱃지")) {
-						eventType = "덤증정";
-					} else if(ele.get(0).select("img").attr("alt").equals("SALE 뱃지")) {
+					} else if(eventType.equals("세일")) {
 						eventType = "할인";
 					} else {
 						eventType = "기타행사";
 					}
 					
-					String itemImage = "https://emart24.co.kr"+ele.get(1).select("img").attr("src");
+					String itemImage = itemImg.select("img").attr("src");
 					
  				   	ItemVO itemVO = new ItemVO();
- 				   	itemVO.setCategory("기타상품");
 	 				itemVO.setItemName(itemName);
-	 				changeCategory(itemVO); // 상품명을 받았으면 카테고리를 다시 변경해준다.
 	 				itemVO.setItemPrice(itemPrice);
 	 				itemVO.setSellCVS("이마트24");
 	 				itemVO.setEventType(eventType);
 	 				itemVO.setItemImage(itemImage);
+	 				changeCategory(itemVO);
 	 				
 	 				list.add(itemVO);
+	 				
 				}
 				
 			}
@@ -318,7 +319,8 @@ public class ItemManager {
 		
 		return list;
 
-	}	
+	}
+	
 	   public ArrayList<ItemVO> getMinistopItem() {
 		      ArrayList<ItemVO> list = new ArrayList<ItemVO>();
 		      HashMap<String, String> data = new HashMap<String, String>();

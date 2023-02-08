@@ -245,54 +245,40 @@ public class MapManager {
 	
 	public ArrayList<MapVO> getEmart24Map() {
 		ArrayList<MapVO> list = new ArrayList<MapVO>();
-		targetSite = "https://emart24.co.kr/introduce2/findBranch.asp";
 		
 		try {
 			int page = 0;
 			while(true) {
 				page++;
-				Map<String, String> data = new HashMap<String, String>();
-				data.put("wpsido", "");
-				data.put("spgugun", "");
-				data.put("cpage", page+"");
-				data.put("service_cv", "");
-				data.put("stplacesido", "");
-				data.put("stplacegugun", "");
-				data.put("sText", "");
+				targetSite = "http://emart24.co.kr/api1/store?page="+page;
 				
 				Thread.sleep(500);
 				doc = Jsoup.connect(targetSite)
-							.data(data)
-							.post();
+						.ignoreContentType(true)
+						.get();
 				
-				// td.txtLeft 안에 주소가 들어있는데 페이지의 어떤 편의점도 없는 경우
-				// 즉, 마지막 페이지를 벗어난 경우에는 주소도 당연히 없기 때문에 size가 0이 된다.
-				// 그래서 td.txtLeft의 size가 0일 때 반복문을 탈출해준다.
-				if(doc.select("td.txtLeft").size() == 0) {
+				String str = doc.select("body").text();
+				JSONObject jsonObject = (JSONObject) new JSONParser().parse(str);
+				JSONArray jsonArray = (JSONArray) jsonObject.get("data");
+				
+				if(jsonArray.size() == 0) {
 					break;
 				}
-				Elements elements = doc.select("tbody > tr");
-				for(Element element : elements) {
-					Elements ele = element.select("td");
-					String storeName = ele.get(0).text();
-					
-					String address = ele.get(1).text();
-					address = address.substring(0, address.indexOf("|")).trim();
+				
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JSONObject emartObject = (JSONObject) jsonArray.get(i);
+					String storeName = emartObject.get("TITLE").toString();
+					String address = emartObject.get("ADDRESS").toString();
 					
 					MapVO mapVO = new MapVO();
-					// storeName.indexOf("(삭제)") == -1 이라는 것은 storeName 안에 "(삭제)"라는 문자가 없다는 뜻
-					// 만약 storeName.indexOf("(삭제)")가 -1이 아니면 storeName 안에 "(삭제)"라는 문자가 있다는 것이므로
-					// "(삭제)"라는 문자가 없을 경우에만 값을 VO에 넣어준다.
-					if(storeName.indexOf("(삭제)") == -1) {
-						mapVO.setStoreName(storeName);
-						mapVO.setWhichCVS("이마트24");
-						mapVO.setAddress(address.replace("충청북도", "충북").replace("강원도", "강원").replace("경기도", "경기").replace("경상남도", "경남").replace("경상북도", "경북")
-								.replace("광주광역시", "광주").replace("대구광역시", "대구").replace("대구시", "대구").replace("대전광역시", "대전").replace("부산광역시", "부산").replace("부산시", "부산")
-								.replace("서울특별시", "서울").replace("서울시", "서울").replace("세종특별자치시", "세종").replace("울산광역시", "울산").replace("인천광역시", "인천").replace("인천시", "인천")
-								.replace("전라남도", "전남").replace("전라북도", "전북").replace("제주도", "제주").replace("제주특별자치도", "제주").replace("충청남도", "충남"));
-						
-						list.add(mapVO);
-					}
+					mapVO.setStoreName(storeName);
+					mapVO.setWhichCVS("이마트24");
+					mapVO.setAddress(address.replace("충청북도", "충북").replace("강원도", "강원").replace("경기도", "경기").replace("경상남도", "경남").replace("경상북도", "경북")
+							.replace("광주광역시", "광주").replace("대구광역시", "대구").replace("대구시", "대구").replace("대전광역시", "대전").replace("부산광역시", "부산").replace("부산시", "부산")
+							.replace("서울특별시", "서울").replace("서울시", "서울").replace("세종특별자치시", "세종").replace("울산광역시", "울산").replace("인천광역시", "인천").replace("인천시", "인천")
+							.replace("전라남도", "전남").replace("전라북도", "전북").replace("제주도", "제주").replace("제주특별자치도", "제주").replace("충청남도", "충남"));
+					
+					list.add(mapVO);
 				}
 			}
 		} catch(Exception e) {

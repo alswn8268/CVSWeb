@@ -113,14 +113,14 @@
 	 </select>
 	 
 	 <select id="isearchCount" parameterType="String" resultType="int">
-		select count(*) from item where itemname like '%' || #{value} || '%' order by idx desc
+		select count(*) from item where itemname like '%' || #{value} || '%' order by idx desc 
 	 </select>		
 
 	 <select id="isearch" parameterType="itemParam" resultType="item_vo">
 	 	<![CDATA[
 			select * from (
 				select rownum rnum, TT.* from (
-				 	select * from item where itemname like '%' || #{value} || '%' order by idx desc
+				 	select * from item where itemname like '%' || #{value} || '%' and extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) order by idx desc
 				) TT where rownum <= #{endNo}
 			) where rnum >= #{startNo} 		
 		]]>	 	 	
@@ -186,7 +186,7 @@
 	 	<![CDATA[
 			select * from (
 				select rownum rnum, TT.* from (
-				 	select * from item where trim(category) like '%' || #{value} || '%' order by idx desc
+				 	select * from item where trim(category) like '%' || #{value} || '%' and extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) order by idx desc
 				) TT where rownum <= #{endNo}
 			) where rnum >= #{startNo} 		
 		]]>	 	
@@ -200,7 +200,7 @@
 	 	<![CDATA[
 			select * from (
 				select rownum rnum, TT.* from (
-				 	select * from item where trim(sellCVS) like '%' || #{value} || '%' order by idx desc
+				 	select * from item where trim(sellCVS) like '%' || #{value} || '%' and extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) order by idx desc
 				) TT where rownum <= #{endNo}
 			) where rnum >= #{startNo} 		
 		]]>	 
@@ -214,7 +214,7 @@
 	 	<![CDATA[
 			select * from (
 				select rownum rnum, TT.* from (
-				 	select * from item where trim(eventType) like '%' || #{value} || '%' order by idx desc
+				 	select * from item where trim(eventType) like '%' || #{value} || '%' and extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) order by idx desc
 				) TT where rownum <= #{endNo}
 			) where rnum >= #{startNo} 		
 		]]>	 	 	
@@ -230,7 +230,7 @@
 	 	<![CDATA[
 			select * from (
 				select rownum rnum, TT.* from (
-					select * from item where itemPrice <= #{itemPrice}  order by idx desc
+					select * from item where itemPrice <= #{itemPrice} and extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) order by idx desc
 				) TT where rownum <= #{endNo}
 			) where rnum >= #{startNo} 		
 		]]>	 	
@@ -365,7 +365,8 @@
 	</select>
 
 	<select id="adminChart" resultType="item_vo">
-		select sellCVS, count(itemName) as hit, round(avg(itemPrice)) as itemPrice from item group by sellCVS
+		select sellCVS, count(itemName) as hit, round(avg(itemPrice)) as itemPrice from item 
+		where extract (month from itemdate) = extract (month from sysdate) and extract (year from itemdate) = extract (year from sysdate) group by sellCVS 
 	</select>
 
 	<select id="fSearch" parameterType="String" resultType="item_vo">
