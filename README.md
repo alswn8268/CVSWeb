@@ -18,12 +18,12 @@
     <th>ETC</th>        
   </tr>
   <tr>
-    <td>JSP, HTML, CSS, JavaScript, jQuery</td>
+    <td>JSP, HTML, CSS,<br>JavaScript, jQuery</td>
     <td>Oracle</td>
     <td>JAVA 11</td>
     <td>Spring</td>
     <td>Eclipse<br>(STS 3.9.7)</td>    
-    <td>MyBatis, Ajax, Bootstrap,<br> KakaoMap API, ...</td>        
+    <td>MyBatis, Ajax, Bootstrap,<br>KakaoMap API, JSoup, ...</td>        
   </tr>
 </table>
 
@@ -75,7 +75,7 @@
     </tr>    
     <tr>
       <td>편의점 찾기 페이지 전반</td>
-      <td>편의점 종류, 시도, 구군, 입력한 정보를 ajax로 넘겨서, 편의점 위치 정보 DB에서 맞는 정보를 찾아와<br>카카오맵 api에 넘겨서 실시간으로 검색한 모든 편의점이 지도에 마커에 꽂히게 함</td>
+      <td>편의점 종류, 시도, 구군, 입력한 정보를 ajax로 넘겨서, 편의점 위치 정보 DB에서 맞는 정보를 출력 <br> =>  카카오맵 API 연동 => 편의점 검색</td>
     </tr>
     <tr>
       <td>같은 상품 가격 비교</td>
