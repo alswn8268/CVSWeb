@@ -10,11 +10,11 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <script type="text/javascript" src="../js/jquery-3.6.1.js" defer></script>
 <link rel="stylesheet" href="../css/main.css">
-<script type="text/javascript" src="../js/itemInsert.js" defer></script>
+<script type="text/javascript" src="../js/itemImageInsertOK.js" defer></script>
 </head>
 <body>
 	<div class="container" style="margin-top: 100px; width: 800px">
-		<form method="post" action="insertOK"> 
+		<form method="post" id="frm" action="insertOK"> 
 			<table class="table table-hover table-bordered">
 				<thead>
 					<tr>
@@ -73,20 +73,20 @@
 					<tr>
 						<th style="text-align: center; width: 150px; vertical-align: middle;">상품명</th>
 						<td>
-							<input class="form-control" type="text" placeholder="상품명을 입력해주세요." name="itemName">
+							<input class="form-control" type="text" placeholder="상품명을 입력해주세요." name="itemName" id="itemName">
 						</td>
 					</tr>
 					<tr>
 						<th style="text-align: center; width: 150px; vertical-align: middle;">원가</th>
 						<td>
-							<input class="form-control" type="text" placeholder="원가를 입력해주세요." name="itemPrice" width="600px;">
+							<input class="form-control" type="text" placeholder="원가를 입력해주세요." name="itemPrice" id="itemPrice" width="600px;">
 						</td>
 					</tr>				
 					<tr>
 						<th style="text-align: center; width: 150px; vertical-align: middle;">카테고리</th>
 						<td>
 							<select class="form-select" name="category">
-								<option>식품</option>
+								<option selected>식품</option>
 								<option>음료/아이스크림</option>
 								<option>과자/빵</option>
 								<option>잡화</option>
@@ -97,7 +97,7 @@
 					<tr>
 						<th style="text-align: center; width: 150px; vertical-align: middle;">판매 편의점</th>
 						<td>
-							<select class="form-select" name="sellCVS" size="6">
+							<select class="form-select" name="sellCVS">
 								<option selected>CU</option>
 								<option>GS25</option>
 								<option>세븐일레븐</option>
@@ -122,7 +122,7 @@
 					<tr>
 						<th style="text-align: center; width: 150px; vertical-align: middle;">증정 상품</th>
 						<td>
-							<input class="form-control" type="text" placeholder="증정상품명을 입력해주세요" name="addItemName" width="600px;">
+							<input class="form-control" type="text" placeholder="증정상품이 있다면 입력해주세요" name="addItemName" width="600px;">
 						</td>
 					</tr>				
 				</tbody>
@@ -132,7 +132,7 @@
 							<input class="btn btn-success" type="button" onclick="location.href='../'" value="메인으로">
 						</td>
 						<td colspan="1" align="center">
-							<input class="btn btn-primary" type="submit" value="등록">
+							<input class="btn btn-primary" type="button" onclick="blankTest()" value="등록">
 						</td>
 					</tr>					
 				</tfoot>
