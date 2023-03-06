@@ -132,6 +132,7 @@
 	
 	.myModal:hover {
 		cursor: pointer;
+		background-color: mistyrose;
 	}
 	
 	.modalTr {
@@ -208,6 +209,8 @@
 	 String em = "<div style='width: 12px; height: 12px; border-radius: 50%; background-color: gray; display: inline-block; vertical-align: middle;'></div>";
 	 String cs = "<div style='width: 12px; height: 12px; border-radius: 50%; background-color: blue; display: inline-block; vertical-align: middle;'></div>";
 	 
+	 int cvscnt[] = new int[6]; 
+	 
 %>
 
 <table class="table table-bordered" width="1200" cellpadding="5" cellspacing="0">
@@ -282,23 +285,24 @@
 					if(check)
 					{
 						out.println("<span>");
-						if (list.get(j).getCVS().equals("세븐일레븐")) {
+						if (list.get(j).getCVS().equals("세븐일레븐") && cvscnt[2] != i) {
 							out.println(se);
-						}
-						if (list.get(j).getCVS().equals("CU")) {
+							cvscnt[2] = i;
+						} else if (list.get(j).getCVS().equals("CU") && cvscnt[1] != i) {
 							out.println(cu);
-						}
-						if (list.get(j).getCVS().equals("GS25")) {
+							cvscnt[1] = i;
+						} else if (list.get(j).getCVS().equals("GS25") && cvscnt[0] != i) {
 							out.println(gs);
-						}
-						if (list.get(j).getCVS().equals("ministop")) {
+							cvscnt[0] = i;
+						} else if (list.get(j).getCVS().equals("ministop") && cvscnt[3] != i) {
 							out.println(ms);
-						}
-						if (list.get(j).getCVS().equals("이마트24")) {
+							cvscnt[3] = i;
+						} else if (list.get(j).getCVS().equals("이마트24") && cvscnt[4] != i) {
 							out.println(em);
-						}
-						if (list.get(j).getCVS().equals("C·SPACE")) {
+							cvscnt[4] = i;
+						} else if (list.get(j).getCVS().equals("C·SPACE") && cvscnt[5] != i) {
 							out.println(cs);
+							cvscnt[5] = i;
 						}								
 						out.println("</span>");
 					}
@@ -309,21 +313,22 @@
 						i + "<br><span class='myModal' data-bs-toggle='modal' data-bs-target='#myModal'>");
 						if (list.get(j).getCVS().equals("세븐일레븐")) {
 							out.println(se);
-						}
-						if (list.get(j).getCVS().equals("CU")) {
+							cvscnt[2] = i;
+						} else if (list.get(j).getCVS().equals("CU")) {
 							out.println(cu);
-						}
-						if (list.get(j).getCVS().equals("GS25")) {
+							cvscnt[1] = i;
+						} else if (list.get(j).getCVS().equals("GS25")) {
 							out.println(gs);
-						}
-						if (list.get(j).getCVS().equals("ministop")) {
+							cvscnt[0] = i;
+						} else if (list.get(j).getCVS().equals("ministop")) {
 							out.println(ms);
-						}
-						if (list.get(j).getCVS().equals("이마트24")) {
+							cvscnt[3] = i;
+						} else if (list.get(j).getCVS().equals("이마트24")) {
 							out.println(em);
-						}
-						if (list.get(j).getCVS().equals("C·SPACE")) {
+							cvscnt[4] = i;
+						} else if (list.get(j).getCVS().equals("C·SPACE")) {
 							out.println(cs);
+							cvscnt[5] = i;
 						}							
 						out.println("</span>");
 						check = true;
@@ -354,24 +359,25 @@
 							if(check)
 							{
 								out.println("<span>");
-								if (list.get(j).getCVS().equals("세븐일레븐")) {
+								if (list.get(j).getCVS().equals("세븐일레븐") && cvscnt[2] != i) {
 									out.println(se);
-								}
-								if (list.get(j).getCVS().equals("CU")) {
+									cvscnt[2] = i;
+								} else if (list.get(j).getCVS().equals("CU") && cvscnt[1] != i) {
 									out.println(cu);
-								}
-								if (list.get(j).getCVS().equals("GS25")) {
+									cvscnt[1] = i;
+								} else if (list.get(j).getCVS().equals("GS25") && cvscnt[0] != i) {
 									out.println(gs);
-								}
-								if (list.get(j).getCVS().equals("ministop")) {
+									cvscnt[0] = i;
+								} else if (list.get(j).getCVS().equals("ministop") && cvscnt[3] != i) {
 									out.println(ms);
-								}
-								if (list.get(j).getCVS().equals("이마트24")) {
+									cvscnt[3] = i;
+								} else if (list.get(j).getCVS().equals("이마트24") && cvscnt[4] != i) {
 									out.println(em);
-								}
-								if (list.get(j).getCVS().equals("C·SPACE")) {
+									cvscnt[4] = i;
+								} else if (list.get(j).getCVS().equals("C·SPACE") && cvscnt[5] != i) {
 									out.println(cs);
-								}								
+									cvscnt[5] = i;
+								}									
 								out.println("</span>");
 							}
 							else
@@ -380,21 +386,22 @@
 								out.println("<td class='table-warning myModal' data-bs-toggle='modal' data-bs-target='#myModal' data-bs-day='" + i +"'>" + i + "<br><span>");
 								if (list.get(j).getCVS().equals("세븐일레븐")) {
 									out.println(se);
-								}
-								if (list.get(j).getCVS().equals("CU")) {
+									cvscnt[2] = i;									
+								} else if (list.get(j).getCVS().equals("CU")) {
 									out.println(cu);
-								}
-								if (list.get(j).getCVS().equals("GS25")) {
+									cvscnt[1] = i;									
+								} else if (list.get(j).getCVS().equals("GS25")) {
 									out.println(gs);
-								}
-								if (list.get(j).getCVS().equals("ministop")) {
+									cvscnt[0] = i;									
+								} else if (list.get(j).getCVS().equals("ministop")) {
 									out.println(ms);
-								}
-								if (list.get(j).getCVS().equals("이마트24")) {
+									cvscnt[3] = i;									
+								} else if (list.get(j).getCVS().equals("이마트24")) {
 									out.println(em);
-								}
-								if (list.get(j).getCVS().equals("C·SPACE")) {
+									cvscnt[4] = i;									
+								} else if (list.get(j).getCVS().equals("C·SPACE")) {
 									out.println(cs);
+									cvscnt[5] = i;									
 								}				
 								out.println("</span>");
 								check = true;
